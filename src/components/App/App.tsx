@@ -10,22 +10,23 @@ import ImageModal from "../ImageModal/ImageModal";
 
 import { fetchImages } from "../../images-api";
 import toast, { Toaster } from "react-hot-toast";
+import { Image } from "../../types";
 
-export default function App() {
-  const [images, setImages] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+const App: React.FC = () => {
+  const [images, setImages] = useState<Image[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
 
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [showButton, setShowButton] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+  const [showButton, setShowButton] = useState<boolean>(false);
 
-  const buttonRef = useRef(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleSearch = (newQuery) => {
+  const handleSearch = (newQuery: string) => {
     setQuery(newQuery);
     setPage(1);
     setImages([]);
@@ -44,8 +45,8 @@ export default function App() {
         if (data.length === 0) {
           toast.error("No images!");
         } else {
-          setImages((prevArticles) => {
-            return [...prevArticles, ...data];
+          setImages((prevImages) => {
+            return [...prevImages, ...data];
           });
         }
       } catch (error) {
@@ -58,10 +59,10 @@ export default function App() {
   }, [page, query]);
 
   const handleLoadMore = () => {
-    setPage(page + 1);
+    setPage((prevPage) => prevPage + 1);
   };
 
-  const openModal = (image) => {
+  const openModal = (image: Image) => {
     setSelectedImage(image);
     setIsOpen(true);
   };
@@ -97,7 +98,9 @@ export default function App() {
 
   useEffect(() => {
     window.onscroll = handleScroll;
-    return () => (window.onscroll = null);
+    return () => {
+      window.onscroll = null;
+    };
   }, []);
 
   return (
@@ -110,12 +113,28 @@ export default function App() {
         <LoadMorebutton loadMore={handleLoadMore} onRef={buttonRef} />
       )}
       <ImageModal
-        openModal={modalIsOpen}
+        isOpen={modalIsOpen}
         onClose={closeModal}
         selectedImage={selectedImage}
       />
       <Toaster position="top-right" reverseOrder={false} />
       {showButton && <ScrollButton scrollToTop={scrollToTop} />}
     </div>
+    //     <div className={css.container}>
+    //   <SearchBar onSubmit={handleSearch} />
+    //   {error && <ErrorMassage />}
+    //   {images.length > 0 && <ImageGallery images={images} onOpen={openModal} />}
+    //   {isLoading && <Loader />}
+    //   {images.length > 0 && !isLoading && (
+    //     <>
+    //       <LoadMorebutton loadMore={handleLoadMore} onRef={buttonRef} />
+    //       <ImageModal isOpen={modalIsOpen} onClose={closeModal} selectedImage={selectedImage} />
+    //       <Toaster position="top-right" reverseOrder={false} />
+    //       {showButton && <ScrollButton scrollToTop={scrollToTop} />}
+    //     </>
+    //   )}
+    // </div>
   );
-}
+};
+
+export default App;
