@@ -1,0 +1,8 @@
+.error {
+  font-weight: 600;
+  font-size: 20px;
+  display: block;
+  margin-top: 18px;
+  margin-left: 18px;
+  color: blue;
+}
